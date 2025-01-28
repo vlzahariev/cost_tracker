@@ -4,7 +4,7 @@ import pandas as pd
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum, Avg, Func, Count, F
+from django.db.models import Sum, Avg, Func, Count, F, Value
 from django.db.models.functions import TruncMonth
 from django.http import HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404, render
@@ -215,30 +215,51 @@ class ExpenseDetailView(views.ListView):
         # Get the queryset with applied filters
         expenses = self.get_queryset()
 
+        # Define a function to calculate past months in a year
+        def calculate_past_months(year):
+            if year == current_year:
+                return current_month
+            elif year == 2024:
+                return 7
+            elif year < current_year:
+                return 12
+            else:
+                return 0  # Future years have no past months
+
+        # Get all years present in the filtered expenses
+        years_in_data = expenses.annotate(year=Year('date')).values_list('date__year', flat=True).distinct()
+
+        # Create a dictionary to store past months for each year
+        past_months_by_year = {year: calculate_past_months(year) for year in years_in_data}
+
         # Aggregations
         context['total_by_category_month'] = expenses.values('category', 'date__year', 'date__month') \
-            .annotate(total_amount=Sum('amount')) \
-            .order_by('category', 'date__year', 'date__month')
+                .annotate(total_amount=Sum('amount')) \
+                .order_by('category', 'date__year', 'date__month')
 
         context['total_by_category_year'] = (
             expenses.annotate(
-                month=Month('date'),
                 year=Year('date')
             )
             .values('category', 'date__year')
             .annotate(
                 total_amount=Sum('amount'),
-                unique_months=Count('month', distinct=True),
-                average_per_month=F('total_amount') / F('unique_months')
+                average_per_month=F('total_amount') / Value(1)  # Placeholder for division
             )
             .order_by('-total_amount', 'category', 'date__year')
         )
+
+        # Update `average_per_month` by dividing by the number of past months
+        for item in context['total_by_category_year']:
+            year = item['date__year']
+            past_months = past_months_by_year.get(year, 0)
+            item['average_per_month'] = item['total_amount'] / past_months if past_months > 0 else 0
 
         # Distinct comments for the dropdown
         distinct_comments = (
             Expense.objects.filter(user=self.request.user)
             .exclude(comment__isnull=True)  # Exclude None values
-            .exclude(comment__exact='')    # Exclude empty strings
+            .exclude(comment__exact='')  # Exclude empty strings
             .values_list('comment', flat=True)
             .distinct()
         )
@@ -251,6 +272,61 @@ class ExpenseDetailView(views.ListView):
         context['years'] = range(2020, current_year + 1)
 
         return context
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #
+    #     # Current year and month
+    #     current_year = datetime.now().year
+    #     current_month = datetime.now().month
+    #     context['current_year'] = current_year
+    #     context['current_month'] = current_month
+    #
+    #     # Get the queryset with applied filters
+    #     expenses = self.get_queryset()
+    #
+    #     total_unique_months = Expense.objects.filter(user=self.request.user) \
+    #         .annotate(month=TruncMonth('date')) \
+    #         .values('month') \
+    #         .distinct() \
+    #         .count()
+    #
+    #     # Aggregations
+    #     context['total_by_category_month'] = expenses.values('category', 'date__year', 'date__month') \
+    #         .annotate(total_amount=Sum('amount')) \
+    #         .order_by('category', 'date__year', 'date__month')
+    #
+    #     context['total_by_category_year'] = (
+    #         expenses.annotate(
+    #             month=Month('date'),
+    #             year=Year('date')
+    #         )
+    #         .values('category', 'date__year')
+    #         .annotate(
+    #             total_amount=Sum('amount'),
+    #             unique_months=Count('month', distinct=True),
+    #             average_per_month=F('total_amount') / F('unique_months')
+    #         )
+    #         .order_by('-total_amount', 'category', 'date__year')
+    #     )
+    #
+    #     # Distinct comments for the dropdown
+    #     distinct_comments = (
+    #         Expense.objects.filter(user=self.request.user)
+    #         .exclude(comment__isnull=True)  # Exclude None values
+    #         .exclude(comment__exact='')    # Exclude empty strings
+    #         .values_list('comment', flat=True)
+    #         .distinct()
+    #     )
+    #     context['distinct_comments'] = ["All"] + list(distinct_comments)  # Add "All" at the beginning
+    #
+    #     # Categories for dropdown
+    #     context['categories'] = Expense.CATEGORY
+    #
+    #     # Year range for the dropdown
+    #     context['years'] = range(2020, current_year + 1)
+    #
+    #     return context
 
 
 @login_required
