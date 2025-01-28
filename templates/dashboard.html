@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+
+        <div class="sub-container">
+            <div class="row">
+                <div>
+                    <h2>Total Income</h2>
+                    <ul>
+                        <li class="li-text">{{ total_income|floatformat:2 }}</li>
+                    </ul>
+                </div>
+                <div>
+                    <h2>Average per month</h2>
+                    <ul>
+                        <li class="li-text">{{ avg_income|floatformat:2 }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div>
+                    <h2>Total Expense</h2>
+                    <ul>
+                        <li class="li-text">{{ total_expense|floatformat:2 }}</li>
+                    </ul>
+                </div>
+                <div>
+                    <h2>Average per month</h2>
+                    <ul>
+                        <li class="li-text">{{ avg_expense|floatformat:2 }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="sub-container">
+            <h2>Monthly Income vs Monthly Expense Overview for a Calendar Year</h2>
+            <div>{{ combined_plot|safe }}</div>
+        </div>
+    </div>
+
+{% endblock %}

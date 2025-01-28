@@ -1,0 +1,221 @@
+@font-face {
+    font-family: 'Jost';
+    src: url('../static/fonts/Jost/Jost-VariableFont_wght.ttf') format('woff');
+}
+
+html {
+    font-family: 'Jost', serif;
+}
+
+body {
+    width: 100%;
+    background: linear-gradient(rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.25)), /* Transparent overlay */ url('image/background.jpg'); /* Background image */
+    background-size: cover; /* Scale the image to cover the container */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh; /* Set the height of the element */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+}
+
+header {
+    display: flex;
+    margin: 50px 0 50px 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    font-size: 20px;
+    gap: 25px;
+    position: fixed;
+    top: 20px;
+}
+
+header h1 {
+    position: relative;
+    top: 30px;
+    color: whitesmoke;
+    z-index: -1;
+}
+
+.nav-btn{
+    z-index: 1;
+    /*border: 1px solid black;*/
+    width: 200px;
+    border-radius: 15px;
+    padding: 10px;
+    margin: 0;
+    background-color: dimgray;
+    color: white;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 24px;
+    box-shadow: 1px 1px 10px;
+    text-align: center;
+
+}
+
+.nav-btn:hover {
+    box-shadow: 1px 1px 10px;
+    color: gold;
+}
+
+.dropdown {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 40px;
+    padding-top: 30px;
+    gap: 5px;
+}
+
+.dd-trigger:hover .dropdown {
+    display: flex;
+}
+
+.container {
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 50px;
+}
+
+.sub-container {
+    width: max-content;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid black;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 3px 3px 5px;
+    padding: 0 50px;
+    z-index: -1;
+}
+
+.li-text {
+    font-size: 16px;
+    color: black;
+    font-family: cursive;
+    list-style: none;
+}
+.card-background {
+    background-color: whitesmoke;
+    /*padding: 3px;*/
+    border-radius: 8px;
+}
+.outer-border {
+    border: 5mm ridge rgba(0, 0, 0, 0.25);
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.inner-border {
+    /*border: 1px solid rgba(0, 0, 0, 0.25);*/
+    padding: 50px;
+    border-radius: 8px;
+}
+
+label {
+font-size:24px;
+}
+
+input, select {
+    border: 1px solid black;
+    font-size: 24px;
+    border-radius: 8px;
+}
+
+button {
+    font-size: 24px;
+    border: 1px solid black;
+    border-radius: 8px;
+    background-color: whitesmoke;
+     box-shadow: 1px 1px 5px;
+
+}
+
+button:hover {
+    background-color: goldenrod;
+    box-shadow: 1px 1px 15px goldenrod;
+}
+
+.table {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+}
+
+th {
+    font-size: 24px;
+}
+
+td {
+    font-size: 18px;
+    text-align: center;
+}
+
+th, td {
+    padding: 5px 15px;
+}
+
+.href-link {
+    display: flex;
+    gap: 15px;
+    font-size: 20px;
+    text-decoration: none;
+    text-align: center;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+}
+
+.column button {
+    margin-top: 35px;
+}
+
+.scrollable {
+    max-height: 600px; /* Set height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Disable horizontal scrolling (optional) */
+    padding: 10px; /* Optional: Add some padding */
+}
+
+.gap {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    gap: 25px;
+}
+
+.italic {
+    font-weight: 900;
+    font-style: italic;
+    color: rgb(80, 80, 80);
+    background-color: lightgrey;
+    box-shadow: 1px 1px 5px 3px rgba(211, 211, 211, 0.9);
+    border-radius: 5px;
+    text-align: center;
+}
+
+thead {
+    color: rgb(128, 128, 128);
+    font-weight: 300;
+}

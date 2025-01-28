@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="post" action="{% url 'edit-expense' pk=edit_expense.pk %}">
+    {% csrf_token %}
+    <div>
+        <h1>Промени разход</h1>
+        <label for="id_user" hidden>User</label>
+<input id="id_user" type="hidden" name="user" value="{{ form.user.value }}">
+        {{ form.amount }}
+        {{ form.date }}
+        {{ form.category }}
+        {{ form.comment }}
+        {% if form.errors %}
+      <ul>
+        {% for field in form %}
+          {% for error in field.errors %}
+            <li>{{ field.label }}: {{ error }}</li>
+          {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+        <button type="submit">Заведи</button>
+    </div>
+</form>
+
+{% endblock %}

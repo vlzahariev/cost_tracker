@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static "style.css" %}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Cost Tracker</title>
+</head>
+<body>
+<header>
+    {% if user.is_authenticated %}
+        <nav class="header">
+            <a class="nav-btn" href="{% url 'main-dashboard' %}">Home</a>
+            <div class="dd-trigger">
+                <p class="nav-btn">Income</p>
+                <div class="dropdown">
+                    <a class="nav-btn" href="{% url 'add-income' %}">Add Income</a>
+                    <a class="nav-btn" href="{% url 'list-income' pk=user.pk %}">List Income</a>
+                </div>
+            </div>
+            <div class="dd-trigger">
+                <p class="nav-btn">Expense</p>
+                <div class="dropdown">
+                    <a class="nav-btn" href="{% url 'add-expense' %}">Add Expense</a>
+                    <a class="nav-btn" href="{% url 'list-expense' pk=user.pk %}">List Expense</a>
+                    <a class="nav-btn" href="{% url 'expense_detail' %}">Expense Details</a>
+                    <a class="nav-btn" href="{% url 'upload_expenses' %}">Upload Expense</a>
+                </div>
+            </div>
+            <div class="dd-trigger">
+                <p class="nav-btn">Profile</p>
+                <div class="dropdown">
+                    <a class="nav-btn" href="{% url 'admin:index' %}">Admin</a>
+                    <a class="nav-btn" href="{% url 'edit_user' %}">Edit User</a>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="nav-btn" type="submit">Logout</button>
+                    </form>
+                </div>
+            </div>
+
+        </nav>
+        <h1>Welcome, {{ user.first_name }}</h1>
+    {% else %}
+        <nav class="header">
+            <a class="nav-btn" href="{% url 'login' %}">Login</a>
+        </nav>
+    {% endif %}
+</header>
+{% block content %}
+{% endblock %}
+</body>
+<script type="text/javascript" src="{% static 'js/js.js' %}"></script>
+</html>

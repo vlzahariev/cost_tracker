@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load custom_template %}
+{% block content %}
+    <div class="container">
+        <div class="table">
+            <form method="GET">
+                <div class="gap">
+                    <div class="column">
+                        <label for="category">Category</label>
+                        <select name="category" id="category">
+                            <option value="">All Categories</option>
+                            {% for value, display in categories %}
+                                <option value="{{ value }}"
+                                        {% if value == request.GET.category %}selected{% endif %}>{{ display }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <label for="year">Year</label>
+                        <select name="year">
+                            <option value="All"
+                                    {% if not request.GET.year or request.GET.year == "All" %}selected{% endif %}>All
+                                years
+                            </option>
+                            {% for year in years %}
+                                <option value="{{ year }}"
+                                        {% if request.GET.year == year|stringformat:"s" %}selected{% endif %}>
+                                    {{ year }}
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+                    <div class="column">
+                        <label for="month">Month</label>
+                        <select name="month" id="month">
+                            <option value="">All Months</option>
+                            {#        {% for i in 1|to:12 %}#}
+                            {#            <option value="{{ i }}" {% if i == request.GET.month %}selected{% endif %}>{{ i }}</option>#}
+                            {#        {% endfor %}#}
+                        </select>
+
+                        <label for="comment">Comment:</label>
+                        <select name="comment">
+                            {% for comment in distinct_comments %}
+                                <option value="{{ comment }}"
+                                        {% if request.GET.comment == comment %}selected{% endif %}>
+                                    {{ comment }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Filter</button>
+
+                    </div>
+                </div>
+
+
+            </form>
+
+            <h1>Expense Details</h1>
+
+            <!-- Totals by Category and Year -->
+            <h2 class="italic">Totals by Category and Year</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Year</th>
+                    <th>Total Amount</th>
+                    <th>Average Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for total in total_by_category_year %}
+                    <tr>
+                        <td>{{ total.category }}</td>
+                        <td>{{ total.date__year }}</td>
+                        <td>{{ total.total_amount|floatformat:2 }}</td>
+                        <td>{{ total.average_per_month|floatformat:2 }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Totals by Category and Month -->
+            <h2 class="italic">Totals by Category and Month</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Year</th>
+                    <th>Month</th>
+                    <th>Total Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for total in total_by_category_month %}
+                    <tr>
+                        <td>{{ total.category }}</td>
+                        <td>{{ total.date__year }}</td>
+                        <td>{{ total.date__month }}</td>
+                        <td>{{ total.total_amount|floatformat:2 }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+
+        </div>
+
+        <div class="table scrollable">
+            <!-- Expenses Table -->
+            <h2 class="italic">Expenses</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Comment</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.get_category_display }}</td>
+                        <td>{{ expense.amount }}</td>
+                        <td>{{ expense.date }}</td>
+                        <td>{{ expense.comment }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4">No expenses found for the selected filters.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
