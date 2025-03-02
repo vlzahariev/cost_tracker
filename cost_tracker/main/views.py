@@ -34,9 +34,10 @@ def main_dashboard(request):
     latest_expense_date = Expense.objects.filter(user=user).aggregate(Max('date'))['date__max']
 
     # Determine the most recent date
-    latest_date = max(latest_income_date, latest_expense_date)
-    if latest_date is None:
+    if latest_income_date is None and latest_expense_date is None:
         latest_date = datetime.now().date()  # Default to today's date if no data exists
+    else:
+        latest_date = max(filter(None, [latest_income_date, latest_expense_date]))  # Get the most recent non-None date
 
     # Convert `date` to `datetime` and calculate the start date
     latest_datetime = datetime.combine(latest_date, datetime.min.time())  # Start of the day
